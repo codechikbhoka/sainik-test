@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON to XLSX Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+        }
+        button {
+            display: block;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>JSON to XLSX Converter</h1>
+    <textarea id="jsonInput" placeholder="Enter JSON here..."></textarea>
+    <button onclick="generateXLSX()">Generate XLSX</button>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <script>
+        function generateXLSX() {
+            const jsonInput = document.getElementById('jsonInput').value;
+            let jsonData;
+            try {
+                jsonData = JSON.parse(jsonInput);
+            } catch (error) {
+                alert('Invalid JSON format');
+                return;
+            }
+
+            // Create the worksheet data with specified column headers
+            const worksheetData = [
+                ["Question", "Positive Marks", "Negative Marks", "Answer", "Solution", "Option", "Option", "Option", "Option"]
+            ];
+
+            jsonData.forEach(item => {
+                const correctAnswerKey = item.correctAnswer;
+                const correctAnswerText = item.options[correctAnswerKey];
+                worksheetData.push([
+                    item.question,
+                    1,
+                    0,
+                    correctAnswerText,
+                    "",
+                    item.options.a,
+                    item.options.b,
+                    item.options.c,
+                    item.options.d
+                ]);
+            });
+
+            // Create the worksheet from the data
+            const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Questions');
+
+            // Write the workbook to a file
+            XLSX.writeFile(workbook, 'questions.xlsx');
+        }
+    </script>
+</body>
+</html>
