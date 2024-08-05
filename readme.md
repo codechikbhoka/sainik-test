@@ -1,1 +1,1 @@
-Quick utility website to create exams on Sainik Cadet App.
+Quick utility website to create exams on Sainik Cadet App with ease.
